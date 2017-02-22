@@ -190,6 +190,10 @@ Template.toolbar.events({
 		}
 	},
 
+	'blur .toolbar-search__input'() {
+		toolbarSearch.clear();
+	},
+
 	'click .toolbar-search__input'() {
 		toolbarSearch.shortcut = false;
 	},
