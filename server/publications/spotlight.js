@@ -43,6 +43,9 @@ Meteor.methods({
 			}
 
 			result.users = RocketChat.models.Users.findByActiveUsersExcept(text, usernames, userOptions).fetch();
+			if(!RocketChat.settings.get('Message_Allow_mentions_cross_channel')) {
+				result.users = result.users.filter(({_id}) => !RocketChat.authz.hasPermission(_id, 'view-joined-room'))
+			}
 		}
 
 		if (type.rooms === true && RocketChat.authz.hasPermission(this.userId, 'view-c-room')) {

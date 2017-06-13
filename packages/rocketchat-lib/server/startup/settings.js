@@ -822,6 +822,10 @@ RocketChat.settings.addGroup('Message', function() {
 		type: 'boolean',
 		'public': true
 	});
+	this.add('Message_Allow_mentions_cross_channel', true, {
+		type: 'boolean',
+		'public': true
+	});
 	return this.add('Message_HideType_mute_unmute', false, {
 		type: 'boolean',
 		'public': true
