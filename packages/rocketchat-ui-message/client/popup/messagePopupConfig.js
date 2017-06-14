@@ -40,7 +40,7 @@ Meteor.startup(function() {
 
 const getUsersFromServer = (filter, records, cb) => {
 	const messageUsers = _.pluck(records, 'username');
-	return Meteor.call('spotlight', filter, messageUsers, {
+	return Meteor.call('spotlight', filter, messageUsers, Session.get('openedRoom'), {
 		users: true
 	}, function(err, results) {
 		if (err != null) {

@@ -1,5 +1,5 @@
 Meteor.methods({
-	spotlight(text, usernames, type = {users: true, rooms: true}) {
+	spotlight(text, usernames, type = {users: true, rooms: true}, rid = null) {
 		const result = {
 			users: [],
 			rooms: []
@@ -42,9 +42,10 @@ Meteor.methods({
 				userOptions.sort.username = 1;
 			}
 
-			result.users = RocketChat.models.Users.findByActiveUsersExcept(text, usernames, userOptions).fetch();
-			if(!RocketChat.settings.get('Message_Allow_mentions_cross_channel')) {
-				result.users = result.users.filter(({_id}) => !RocketChat.authz.hasPermission(_id, 'view-joined-room'))
+			result.users = RocketChat.models.Users.findByActiveUsersExcept(text, usernames, userOptions).fetch() || [];
+
+			if(rid !== null && !RocketChat.settings.get('Message_Allow_mentions_cross_channel') && result.users.length > 0) {
+				result.users = result.users.filter(({_id}) => !!RocketChat.models.Subscriptions.findOneByRoomIdAndUserId(rid, _id))
 			}
 		}
 
