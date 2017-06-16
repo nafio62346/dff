@@ -44,7 +44,7 @@ Meteor.methods({
 
 			result.users = RocketChat.models.Users.findByActiveUsersExcept(text, usernames, userOptions).fetch() || [];
 
-			if(rid !== null && !RocketChat.settings.get('Message_Allow_mentions_cross_channel') && result.users.length > 0) {
+			if(rid !== null && !RocketChat.settings.get('Message_AllowMentionsCrossChannel') && result.users) {
 				result.users = result.users.filter(({_id}) => !!RocketChat.models.Subscriptions.findOneByRoomIdAndUserId(rid, _id))
 			}
 		}
