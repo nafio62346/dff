@@ -1,9 +1,6 @@
 {
 	"plugins": {
 		"postcss-import": {},
-		"postcss-custom-properties": {
-			"preserve": true
-		},
 		"postcss-media-minmax": {},
 		"postcss-selector-not": {},
 		"postcss-nesting": {},
