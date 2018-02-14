@@ -13,7 +13,7 @@ if (!Accounts.saml) {
 }
 
 import fiber from 'fibers';
-import connect from 'connect';
+import bodyParser from 'body-parser';
 RoutePolicy.declare('/_saml/', 'network');
 
 /**
@@ -363,7 +363,7 @@ const middleware = function(req, res, next) {
 };
 
 // Listen to incoming SAML http requests
-WebApp.connectHandlers.use(connect.bodyParser()).use(function(req, res, next) {
+WebApp.connectHandlers.use(bodyParser.json()).use(bodyParser.urlencoded()).use(function(req, res, next) {
 	// Need to create a fiber since we're using synchronous http calls and nothing
 	// else is wrapping this in a fiber automatically
 	fiber(function() {
