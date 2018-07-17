@@ -1,4 +1,4 @@
-![Rocket.Chat logo](https://upload.wikimedia.org/wikipedia/commons/1/12/Rocket.Chat_Logo.svg)
+![Rocket.Chat logo](https://rocket.chat/images/press/logos/120x22.png)
 
 # The Ultimate Open Source WebChat Platform
 
