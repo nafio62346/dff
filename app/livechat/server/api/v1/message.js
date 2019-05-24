@@ -23,6 +23,8 @@ API.v1.addRoute('livechat/message', {
 				}),
 			});
 
+			console.log(this.bodyParams);
+
 			const { token, rid, agent, msg } = this.bodyParams;
 
 			const guest = findGuest(token);
@@ -53,6 +55,7 @@ API.v1.addRoute('livechat/message', {
 			};
 
 			const result = Livechat.sendMessage(sendMessage);
+			console.log(result);
 			if (result) {
 				const message = Messages.findOneById(_id);
 				return API.v1.success({ message });
@@ -60,6 +63,7 @@ API.v1.addRoute('livechat/message', {
 
 			return API.v1.failure();
 		} catch (e) {
+			console.log(e);
 			return API.v1.failure(e);
 		}
 	},

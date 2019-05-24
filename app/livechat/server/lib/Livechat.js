@@ -16,7 +16,7 @@ import { settings } from '../../../settings';
 import { callbacks } from '../../../callbacks';
 import { Users, Rooms, Messages, Subscriptions, Settings, LivechatDepartmentAgents, LivechatDepartment, LivechatCustomField, LivechatVisitors } from '../../../models';
 import { Logger } from '../../../logger';
-import { sendMessage, deleteMessage, updateMessage } from '../../../lib';
+import { deleteMessage, updateMessage, sendMessage } from '../../../lib';
 import { addUserRoles, removeUserFromRoles } from '../../../authorization';
 import * as Mailer from '../../../mailer';
 import { LivechatInquiry } from '../../lib/LivechatInquiry';
@@ -24,6 +24,8 @@ import { LivechatInquiry } from '../../lib/LivechatInquiry';
 export const Livechat = {
 	Analytics,
 	historyMonitorType: 'url',
+
+	alo: ((f) => console.log(f))(sendMessage),
 
 	logger: new Logger('Livechat', {
 		sections: {
@@ -134,8 +136,14 @@ export const Livechat = {
 			message.alias = guest.name;
 		}
 
+		console.log({ sendMessage });
+
+		const sentMessage = sendMessage(guest, message, room);
+
+		console.log({ message, sentMessage });
+
 		// return messages;
-		return _.extend(sendMessage(guest, message, room), { newRoom, showConnecting: this.showConnecting() });
+		return _.extend(sentMessage, { newRoom, showConnecting: this.showConnecting() });
 	},
 
 	updateMessage({ guest, message }) {
@@ -930,6 +938,8 @@ export const Livechat = {
 	},
 };
 
+console.log('this');
+
 Livechat.stream = new Meteor.Streamer('livechat-room');
 
 Livechat.stream.allowRead((roomId, extraData) => {
@@ -947,5 +957,6 @@ Livechat.stream.allowRead((roomId, extraData) => {
 });
 
 settings.get('Livechat_history_monitor_type', (key, value) => {
+	console.log('that');
 	Livechat.historyMonitorType = value;
 });
