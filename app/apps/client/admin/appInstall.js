@@ -94,8 +94,12 @@ Template.appInstall.events({
 		FlowRouter.go('/admin/apps');
 	},
 	'click .js-install'(e, t) {
+		console.log('Triggered');
+
 		const url = $('#appPackage').val().trim();
 		const { files } = $('#upload-app')[0];
+
+		console.log({ files });
 
 		const isUpdating = !!t.isUpdatingId.get();
 		const endpoint = isUpdating ? `apps/${ t.isUpdatingId.get() }` : 'apps';
@@ -118,6 +122,8 @@ Template.appInstall.events({
 			return;
 		}
 
+		console.log('Will upload...', data instanceof FormData ? data.getAll('app') : data);
+
 		const callback = (result) => FlowRouter.go(`/admin/apps/${ result.app.id }?version=${ result.app.version }`);
 
 		t.isInstalling.set(true);
@@ -125,14 +131,17 @@ Template.appInstall.events({
 		let promise;
 
 		if (data instanceof FormData) {
+			console.log('... a file');
 			promise = APIClient.upload(endpoint, data);
 		} else {
+			console.log('... a url');
 			promise = APIClient.post(endpoint, data);
 		}
 
-		promise.then(callback)
-			.catch(handleInstallError)
+		promise.then((result) => { console.log('success', result); callback(result); })
+			.catch((error) => { console.log('error', error); handleInstallError(error); })
 			.finally(() => {
+				console.log('Got to the end!');
 				t.isInstalling.set(false);
 				t.file.set('');
 			});
