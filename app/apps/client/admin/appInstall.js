@@ -93,67 +93,49 @@ Template.appInstall.events({
 	'click .js-cancel'() {
 		FlowRouter.go('/admin/apps');
 	},
-	async 'click .js-install'(e, t) {
+	'click .js-install'(e, t) {
 		const url = $('#appPackage').val().trim();
-
-		// Handle url installations
-		if (url) {
-			try {
-				t.isInstalling.set(true);
-				const isUpdating = t.isUpdatingId.get();
-				let result;
-
-				if (isUpdating) {
-					result = await APIClient.post(`apps/${ t.isUpdatingId.get() }`, { url });
-				} else {
-					result = await APIClient.post('apps', { url });
-				}
-
-				FlowRouter.go(`/admin/apps/${ result.app.id }`);
-			} catch (err) {
-				handleInstallError(err);
-			}
-
-			t.isInstalling.set(false);
-
-			return;
-		}
-
 		const { files } = $('#upload-app')[0];
-		if (!(files instanceof FileList)) {
-			return;
-		}
 
-		const data = new FormData();
-		for (let i = 0; i < files.length; i++) {
-			const f = files[0];
+		const isUpdating = !!t.isUpdatingId.get();
+		const endpoint = isUpdating ? `apps/${ t.isUpdatingId.get() }` : 'apps';
+		let data;
 
-			if (f.type === 'application/zip') {
-				data.append('app', f, f.name);
+		if (url) {
+			data = { url };
+		} else if (files instanceof FileList) {
+			const selectedFile = files[0] || {};
+			const payload = new FormData();
+
+			if (selectedFile.type === 'application/zip') {
+				payload.append('app', selectedFile, selectedFile.name);
+
+				data = payload;
 			}
 		}
 
-		if (!data.has('app')) {
+		if (!data) {
 			return;
 		}
+
+		const callback = (result) => FlowRouter.go(`/admin/apps/${ result.app.id }?version=${ result.app.version }`);
 
 		t.isInstalling.set(true);
-		try {
-			const isUpdating = t.isUpdatingId.get();
-			let result;
 
-			if (isUpdating) {
-				result = await APIClient.upload(`apps/${ t.isUpdatingId.get() }`, data);
-			} else {
-				result = await APIClient.upload('apps', data);
-			}
+		let promise;
 
-			FlowRouter.go(`/admin/apps/${ result.app.id }?version=${ result.app.version }`);
-		} catch (err) {
-			handleInstallError(err);
+		if (data instanceof FormData) {
+			promise = APIClient.upload(endpoint, data);
+		} else {
+			promise = APIClient.post(endpoint, data);
 		}
 
-		t.isInstalling.set(false);
+		promise.then(callback)
+			.catch(handleInstallError)
+			.finally(() => {
+				t.isInstalling.set(false);
+				t.file.set('');
+			});
 	},
 });
 
