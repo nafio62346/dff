@@ -1220,6 +1220,7 @@ Template.room.onCreated(function() {
 			this.sendToBottom();
 		}
 	};
+	this.sendToBottomIfNecessaryDebounced = _.debounce(this.sendToBottomIfNecessary, 150);
 }); // Update message to re-render DOM
 
 Template.room.onDestroyed(function() {
@@ -1272,8 +1273,6 @@ Template.room.onRendered(function() {
 	template.checkIfScrollIsAtBottom = function() {
 		template.atBottom = template.isAtBottom(100);
 	};
-
-	template.sendToBottomIfNecessaryDebounced = _.debounce(template.sendToBottomIfNecessary, 150);
 
 	if (window.MutationObserver) {
 		template.observer = new MutationObserver(() => template.sendToBottomIfNecessaryDebounced());
