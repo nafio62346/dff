@@ -2,7 +2,8 @@ import React from 'react';
 
 import { usePermission } from '../../../contexts/AuthorizationContext';
 import NotAuthorizedPage from '../../../components/NotAuthorizedPage';
-import CloudPage from './CloudPage';
+// import CloudPage from './CloudPage';
+import CloudConnectivityPage from './CloudConnectivityPage';
 
 function CloudRoute() {
 	const canManageCloud = usePermission('manage-cloud');
@@ -11,7 +12,7 @@ function CloudRoute() {
 		return <NotAuthorizedPage />;
 	}
 
-	return <CloudPage />;
+	return <CloudConnectivityPage />;
 }
 
 export default CloudRoute;
