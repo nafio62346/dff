@@ -29,25 +29,23 @@ const RegisterModal = ({ onClose, onConnect }) => {
 		</Modal.Header>
 
 		<Modal.Content>
-			<Box mbe='x8'>
-				<MarkdownText content={t('Cloud_inform_email')} />
-			</Box>
+			<MarkdownText content={t('Cloud_inform_email')} />
 			<Field>
 				<Field.Label>{t('Email')}</Field.Label>
 				<Field.Row>
 					<TextInput error={email.length && !validEmail ? 'invalid' : ''} value={email} onChange={handleEmail} placeholder={t('Email')}/>
 				</Field.Row>
-				{!!email.length && !validEmail && <Field.Error>
-					{t('error-invalid-email-address')}
-				</Field.Error>}
+				<Field.Error>
+					&nbsp;{ !!email.length && !validEmail && t('error-invalid-email-address') }
+				</Field.Error>
 			</Field>
 			<Field>
-				<Box display='flex' flexDirection='row'>
-					<Field.Row>
+				<Field.Row>
+					<Box display='flex' flexDirection='row'>
 						<CheckBox checked={agreement} onChange={handleAgreement}/>
 						<Box mis='x8' dangerouslySetInnerHTML={{ __html: t('Cloud_Service_Agree_PrivacyTerms_Description') }} />
-					</Field.Row>
-				</Box>
+					</Box>
+				</Field.Row>
 			</Field>
 		</Modal.Content>
 
