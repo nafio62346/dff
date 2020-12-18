@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, ButtonGroup, Callout, Icon } from '@rocket.chat/fuselage';
+import { Box, Button, ButtonGroup, Callout, Icon, Throbber } from '@rocket.chat/fuselage';
 import { useMutableCallback, useSafely } from '@rocket.chat/fuselage-hooks';
 
 import MarkdownText from '../../../components/MarkdownText';
@@ -43,7 +43,7 @@ const Registered = ({ onUnregister, onSync, lastSynced, airgapped, workspaceId, 
 	const timeAgo = useShortTimeAgo();
 	const formatDateAndTime = useFormatDateAndTime();
 
-	const [isLoading, setLoading] = useSafely(useState(false));
+	const [isLoading, setLoading] = useSafely(useState(true));
 
 	const handleSync = useMutableCallback(async () => {
 		setLoading(true);
@@ -66,16 +66,19 @@ const Registered = ({ onUnregister, onSync, lastSynced, airgapped, workspaceId, 
 			<p><b>{t('Organization')}</b>: {organization}</p>
 			<p><b>{t('Registered_by')}</b>: {email}</p>
 			<p><b>{t('Date')}</b>: {formatDateAndTime(date)}</p>
-			{/* TODO USE REAL URL */}
-			{/* TODO USE REAL URL */}
-			{/* TODO USE REAL URL */}
-			{/* TODO USE REAL URL */}
+
 			<MarkdownText content={t('Cloud_functionalities__url__may_not_work_unregistered', { url: statusPageUrl })}/>
 		</Box>
 		<Box display='flex' flexDirection='row' w='full' alignItems='center'>
 			<ButtonGroup medium align='start'>
-				<Button /* medium */ primary danger onClick={handleUnregister} disabled={isLoading}>{t('Unregister')}</Button>
-				<Button /* medium */ onClick={handleSync} disabled={airgapped || isLoading}>{t('Sync')}</Button>
+				<Button medium primary danger onClick={handleUnregister} disabled={isLoading}>
+					{isLoading && <Throbber inheritColor/>}
+					{!isLoading && t('Unregister')}
+				</Button>
+				<Button medium onClick={handleSync} disabled={airgapped || isLoading}>
+					{isLoading && <Throbber inheritColor/>}
+					{!isLoading && t('Sync')}
+				</Button>
 			</ButtonGroup>
 			<Box color='hint' fontScale='c1' mis='x8'>
 				<Icon color='success' name='check' mie='x4' size='x16'/>

@@ -783,6 +783,7 @@
   "Cloud": "Cloud",
   "Cloud_Workspace": "Cloud Workspace",
   "Cloud_email_confirmation_description": "We just sent an email to __email__.",
+  "Cloud_no_internet": "You have no internet connection at the moment",
   "Cloud_inform_email": "Inform your account email to connect your cloud account, that email will be used to manage your workspace at [cloud.rocket.chat](https://cloud.rocket.chat/) later.",
   "Cloud_functionalities__url__may_not_work_unregistered": "Cloud Workspace is the link between your Rocket.Chat server and your cloud account so some [functionalities](__url__) may not work when not registered.",
   "Cloud_address_to_send_registration_to": "The address to send your Cloud registration email to.",

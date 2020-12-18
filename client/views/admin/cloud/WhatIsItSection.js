@@ -5,7 +5,6 @@ import React from 'react';
 import { useTranslation } from '../../../contexts/TranslationContext';
 import { statusPageUrl } from './constants';
 import { useSetModal } from '../../../contexts/ModalContext';
-import Subtitle from '../../../components/Subtitle';
 
 const SeeMoreModal = ({ onClose }) => {
 	const t = useTranslation();
@@ -42,7 +41,7 @@ function WhatIsItSection(props) {
 	});
 
 	return <Box is='section' {...props}>
-		<Subtitle>{t('Cloud_what_is_it')}</Subtitle>
+		<Box fontScale='s2'>{t('Cloud_what_is_it')}</Box>
 
 		<Box withRichContent color='neutral-800'>
 			<p>{t('Cloud_what_is_it_description')}</p>
