@@ -10,6 +10,10 @@ class StreamerCentralClass extends EventEmitter {
 
 export const StreamerCentral = new StreamerCentralClass();
 
+StreamerCentral.on('newListener', (event, listener) => {
+	console.log('new StreamerCentral', event, listener);
+});
+
 export type Client = {
 	meteorClient: boolean;
 	ws: any;
@@ -123,6 +127,12 @@ export abstract class Streamer extends EventEmitter implements IStreamer {
 		this.allowRead('none');
 		this.allowEmit('all');
 		this.allowWrite('none');
+
+		console.log('construtor', name);
+
+		super.on('newListener', (event) => {
+			console.log(`new listener [${ name }]`, event);
+		});
 	}
 
 	get subscriptionName(): string {
@@ -364,6 +374,7 @@ export abstract class Streamer extends EventEmitter implements IStreamer {
 	}
 
 	__emit(eventName: string, ...args: any[]): boolean {
+		// console.log('using EventEmitter.emit', eventName, args);
 		return super.emit(eventName, ...args);
 	}
 

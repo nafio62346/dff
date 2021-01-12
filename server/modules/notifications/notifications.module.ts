@@ -1,4 +1,4 @@
-import { IStreamer, IStreamerConstructor, IPublication } from '../streamer/streamer.module';
+import { Streamer, IStreamer, IStreamerConstructor, IPublication } from '../streamer/streamer.module';
 import { Authorization } from '../../sdk';
 import { RoomsRaw } from '../../../app/models/server/raw/Rooms';
 import { SubscriptionsRaw } from '../../../app/models/server/raw/Subscriptions';
@@ -92,6 +92,60 @@ export class NotificationsModule {
 		this.streamUser = new this.Streamer('notify-user');
 
 		this.streamLocal = new this.Streamer('local');
+
+
+
+		this.streamAll.on('newListener', (event, listener) => {
+			console.log('newListener at streamAll ->', event);
+		});
+		this.streamLogged.on('newListener', (event, listener) => {
+			console.log('newListener at streamLogged ->', event);
+		});
+		this.streamRoom.on('newListener', (event, listener) => {
+			console.log('newListener at streamRoom ->', event);
+		});
+		this.streamRoomUsers.on('newListener', (event, listener) => {
+			console.log('newListener at streamRoomUsers ->', event);
+		});
+		this.streamImporters.on('newListener', (event, listener) => {
+			console.log('newListener at streamImporters ->', event);
+		});
+		this.streamRoles.on('newListener', (event, listener) => {
+			console.log('newListener at streamRoles ->', event);
+		});
+		this.streamApps.on('newListener', (event, listener) => {
+			console.log('newListener at streamApps ->', event);
+		});
+		this.streamAppsEngine.on('newListener', (event, listener) => {
+			console.log('newListener at streamAppsEngine ->', event);
+		});
+		this.streamCannedResponses.on('newListener', (event, listener) => {
+			console.log('newListener at streamCannedResponses ->', event);
+		});
+		this.streamIntegrationHistory.on('newListener', (event, listener) => {
+			console.log('newListener at streamIntegrationHistory ->', event);
+		});
+		this.streamLivechatRoom.on('newListener', (event, listener) => {
+			console.log('newListener at streamLivechatRoom ->', event);
+		});
+		this.streamLivechatQueueData.on('newListener', (event, listener) => {
+			console.log('newListener at streamLivechatQueueData ->', event);
+		});
+		this.streamStdout.on('newListener', (event, listener) => {
+			console.log('newListener at streamStdout ->', event);
+		});
+		this.streamRoomData.on('newListener', (event, listener) => {
+			console.log('newListener at streamRoomData ->', event);
+		});
+		this.streamRoomMessage.on('newListener', (event, listener) => {
+			console.log('newListener at streamRoomMessage ->', event);
+		});
+		this.streamUser.on('newListener', (event, listener) => {
+			console.log('newListener at streamUser ->', event);
+		});
+		this.streamLocal.on('newListener', (event, listener) => {
+			console.log('newListener at streamLocal ->', event);
+		});
 	}
 
 	async configure({ Rooms, Subscriptions, Users, Settings }: IModelsParam): Promise<void> {
@@ -322,7 +376,7 @@ export class NotificationsModule {
 		this.streamRoles.allowWrite('none');
 		this.streamRoles.allowRead('logged');
 
-		this.streamUser.on('_afterPublish', async (streamer: IStreamer, publication: IPublication, eventName: string): Promise<void> => {
+		this.streamUser.on('_afterPublish', async (streamer: Streamer, publication: IPublication, eventName: string): Promise<void> => {
 			const { userId } = publication._session;
 			if (!userId) {
 				return;
@@ -348,6 +402,7 @@ export class NotificationsModule {
 				).toArray();
 
 				subscriptions.forEach(({ rid }) => {
+					console.log('1adding listener to', rid, 'on', streamer.name);
 					streamer.on(rid, roomEvent);
 				});
 
@@ -359,6 +414,7 @@ export class NotificationsModule {
 					switch (clientAction) {
 						case 'inserted':
 							subscriptions.push({ rid });
+							console.log('2adding listener to', rid, 'on', streamer.name);
 							streamer.on(rid, roomEvent);
 
 							// after a subscription is added need to emit the room again
@@ -366,15 +422,21 @@ export class NotificationsModule {
 							break;
 
 						case 'removed':
+							console.log('5removing listener from', rid, 'on', streamer.name);
 							streamer.removeListener(rid, roomEvent);
 							break;
 					}
 				};
+				console.log('3adding listener to', userId, 'on', streamer.name);
 				streamer.on(userId, userEvent);
 
 				publication.onStop(() => {
+					console.log('4removing listener from', userId, 'on', streamer.name);
 					streamer.removeListener(userId, userEvent);
-					subscriptions.forEach(({ rid }) => streamer.removeListener(rid, roomEvent));
+					subscriptions.forEach(({ rid }) => {
+						console.log('6removing listener from', rid, 'on', streamer.name);
+						streamer.removeListener(rid, roomEvent);
+					});
 				});
 			}
 		});
